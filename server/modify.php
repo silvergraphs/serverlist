@@ -10,6 +10,31 @@ $statement = $connection->prepare('SELECT * FROM servers WHERE id = :id');
 $statement->execute([':id' => $id]);
 
 $result = $statement->fetch();
+
+$serverId = $_POST['id'];
+$serverName = $_POST['name'];
+$serverLocation = $_POST['location'];
+$serverType = $_POST['type'];
+$serverAddress = $_POST['address'];
+
+if ($id && $serverName && $serverLocation && $serverType && $serverAddress) {
+  try {
+    $updateStatement = $connection->prepare(
+      "UPDATE `servers` SET `name` = :name, `type` = :type, `location` = :location, `address` = :address WHERE `servers`.`id` = :id"
+    );
+
+    $updateStatement->execute([
+      ':name' => $serverName,
+      ':type' => $serverType,
+      ':location' => $serverLocation,
+      ':address' => $serverAddress,
+      ':id' => $serverId,
+    ]);
+    $updateResult = $updateStatement->fetch();
+  } catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
+  }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,14 +51,28 @@ $result = $statement->fetch();
 <body>
 <?php include "../components/header.php"; ?>
 <div id="modify" class="container" align="center">
-<form class="needs-validation" novalidate>
+<form class="needs-validation" novalidate method="POST">
  
-
-   <?php echo "<div class='col-md-4 mb-3'>
+ 
+<?php if ($updateStatement) {
+  echo "<h5 class='mb-5'><svg width='1.5em' height='1.5em' viewBox='0 0 16 16' class='bi bi-check-circle mb-1' fill='currentColor' xmlns='http://www.w3.org/2000/svg'>
+    <path fill-rule='evenodd' d='M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z'/>
+    <path fill-rule='evenodd' d='M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z'/>
+    </svg> Server modified successfully</h5>
+    <a class='btn btn-light' type='submit' href='../'><svg width='1em' height='1em' viewBox='0 0 16 16' class='bi bi-arrow-left-circle mb-1' fill='currentColor' xmlns='http://www.w3.org/2000/svg'>
+    <path fill-rule='evenodd' d='M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z'/>
+    <path fill-rule='evenodd' d='M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z'/>
+   </svg> Go back</a>
+    ";
+} else {
+  echo "<div class='col-md-4 mb-3'>
    <label for='serverNameValidation'>Server Name</label>
-   <input type='text' class='form-control' id='serverNameValidation' placeholder='Server name' value='" .
-     $result['name'] .
-     "' required>
+   <input type='hidden' name='id' value='" .
+    $result['id'] .
+    "'>
+   <input type='text' class='form-control' id='serverNameValidation' name='name' placeholder='Server name' value='" .
+    $result['name'] .
+    "' required>
    <div class='valid-feedback'>
      Looks good!
    </div>
@@ -41,18 +80,28 @@ $result = $statement->fetch();
 
  <div class='col-md-4 mb-3'>
    <label for='serverLocationValidation'>Server Location</label>
-   <input type='text' class='form-control' id='serverLocationValidation' placeholder='Server location' value='" .
-     $result['location'] .
-     "' required>
+   <input type='text' class='form-control' id='serverLocationValidation' name='location' placeholder='Server location' value='" .
+    $result['location'] .
+    "' required>
    <div class='valid-feedback'>
      Looks good!
    </div>
  </div>
 
  <div class='col-md-4 mb-3'>
+ <label for='serverAddressValidation'>Server Address</label>
+ <input type='text' class='form-control' id='serverAddressValidation' name='address' placeholder='IP Address' value='" .
+    $result['address'] .
+    "' required>
+ <div class='valid-feedback'>
+   Looks good!
+ </div>
+</div>
+
+ <div class='col-md-4 mb-3'>
    <div class='form-group'>
  <label for='serverTypeSelect'>Server Type</label>
- <select class='form-control mb-5' id='serverTypeSelect'>
+ <select class='form-control mb-5' id='serverTypeSelect' name='type'>
    <option>VPS</option>
    <option>Dedicated</option>
  </select>
@@ -60,17 +109,19 @@ $result = $statement->fetch();
    <div class='valid-feedback'>
      Looks good!
    </div>
- </div>"; ?>
-
-
-    <a class="btn btn-light" type="submit" href='../'><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-left-circle mb-1" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-  <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-  <path fill-rule="evenodd" d="M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z"/>
+ </div>
+ <a class='btn btn-light' type='submit' href='../'><svg width='1em' height='1em' viewBox='0 0 16 16' class='bi bi-arrow-left-circle mb-1' fill='currentColor' xmlns='http://www.w3.org/2000/svg'>
+ <path fill-rule='evenodd' d='M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z'/>
+ <path fill-rule='evenodd' d='M12 8a.5.5 0 0 1-.5.5H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5a.5.5 0 0 1 .5.5z'/>
 </svg> Cancel</a>
-  <button class="btn btn-light" type="submit"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check-circle mb-1" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-  <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-  <path fill-rule="evenodd" d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z"/>
-</svg> Save Changes</button>
+ <button class='btn btn-light' type='submit'><svg width='1em' height='1em' viewBox='0 0 16 16' class='bi bi-check-circle mb-1' fill='currentColor' xmlns='http://www.w3.org/2000/svg'>
+ <path fill-rule='evenodd' d='M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z'/>
+ <path fill-rule='evenodd' d='M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.236.236 0 0 1 .02-.022z'/>
+</svg> Save Changes</button>";
+} ?>
+
+
+
  
 </form>
 
