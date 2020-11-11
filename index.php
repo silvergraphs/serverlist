@@ -34,6 +34,7 @@ $servers = $connection->query('SELECT * FROM servers');
       <th scope="col">Name</th>
       <th scope="col">Type</th>
       <th scope="col">Location</th>
+      <th scope="col">IP Address</th>
       <th scope="col"></th>
     </tr>
   </thead>
@@ -51,6 +52,9 @@ $servers = $connection->query('SELECT * FROM servers');
       "</td>
   <td>" .
       $server['location'] .
+      "</td>
+      <td>" .
+      $server['address'] .
       "</td>
   <td><a type='button' class='btn btn-light' href='server/modify.php?id=" .
       $server['id'] .
