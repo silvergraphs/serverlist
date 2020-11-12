@@ -1,3 +1,5 @@
+<!-- Footer -->
+
 <hr/>
 <div name="footer" class="container p-2 text-muted" align="center">
 <p><small><svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-code-square mb-1" fill="currentColor" xmlns="http://www.w3.org/2000/svg">

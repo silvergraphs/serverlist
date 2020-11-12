@@ -1,4 +1,6 @@
 <?php
+
+// App configuration file
 define('DB_HOST', 'localhost'); // Database hostname
 define('DB_PORT', '8889'); // Database port
 define('DB_USER', 'root'); // Database username

@@ -1,4 +1,6 @@
 <?php
+
+// Database configuration file
 require "config.php";
 
 try {

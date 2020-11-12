@@ -3,6 +3,8 @@ require 'config.php';
 require 'db.php';
 
 $servers = $connection->query('SELECT * FROM servers');
+
+// Obtains all servers from db
 ?>
 
 
@@ -40,6 +42,7 @@ $servers = $connection->query('SELECT * FROM servers');
   </thead>
   <tbody>
   <?php foreach ($servers as $server) {
+    // Show all servers on a table
     echo "<tr>
   <th scope='row'>" .
       $server['id'] .
@@ -73,6 +76,7 @@ $servers = $connection->query('SELECT * FROM servers');
   </tbody>
 </table>
 
+<!-- Buttons -->
 </div>
 <div name="control-buttons" class="container p-2" align="center">
 <a type="button" class="btn btn-light" href="server/add.php"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-plus-circle mb-1" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -85,7 +89,7 @@ $servers = $connection->query('SELECT * FROM servers');
 
 <?php include "components/footer.php"; ?>
 
-<!-- Modal -->
+<!-- Deletion Modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
